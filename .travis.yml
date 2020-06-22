@@ -16,6 +16,7 @@ addons:
     # clang-format/clang-tidy is not embedded in clangbuiltlinux/ubuntu:latest
     - clang-format
     - clang-tidy
+    - clang-tools
 
 before_install:
   # latest published version.
@@ -37,6 +38,6 @@ script:
   - if [ $(clang-format -style=file cpp/template/weak/ClasseB.h -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseB.h | diff -pu cpp/template/weak/ClasseB.h - ; exit 1; fi
   - if [ $(clang-format -style=file cpp/template/weak/main.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/main.cpp | diff -pu cpp/template/weak/main.cpp - ; exit 1; fi
   - if [ $(clang-format -style=file cpp/template/weak/Template.h -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/Template.h | diff -pu cpp/template/weak/Template.h - ; exit 1; fi
-  - cd cpp; mkdir buildcpp; cd buildcpp; CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake ..; make
+  - cd cpp; mkdir buildcpp; cd buildcpp; CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake ..; scan-build -v -o . make
   - python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py
   
