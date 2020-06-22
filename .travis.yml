@@ -29,7 +29,7 @@ before_install:
   - clang-format --version
 
 script:
-  - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fsyntax-only -O2
+  - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fanalyzer -O2
   - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak clangbuiltlinux/ubuntu:latest clang++-11 cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Weverything -Werror -fsyntax-only -O2
   - cppcheck --inconclusive --enable=all cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp
   - if [ $(clang-format -style=file cpp/template/weak/ClasseA.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseA.cpp | diff -pu cpp/template/weak/ClasseA.cpp - ; exit 1; fi
