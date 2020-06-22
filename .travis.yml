@@ -8,14 +8,19 @@ dist: bionic
 addons:
   apt:
     sources:
-    - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ focal main'
+    - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ focal main universe'
     packages:
     - cppcheck
-    # clang-format is not embedded in clangbuiltlinux/ubuntu:latest
+    # clang is needed to generate compile_commands.json with cmake.
+    - clang
+    # clang-format/clang-tidy is not embedded in clangbuiltlinux/ubuntu:latest
     - clang-format
+    - clang-tidy
 
 before_install:
+  # latest published version.
   - docker pull gcc:latest
+  # master version. Does not include clang-format/clang-tidy.
   - docker pull clangbuiltlinux/ubuntu:latest
   - docker run --rm gcc:latest g++ --version
   - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
@@ -23,8 +28,8 @@ before_install:
   - clang-format --version
 
 script:
-  - docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fsyntax-only -O2
-  - docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp clangbuiltlinux/ubuntu:latest clang++-11 cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Weverything -Werror -fsyntax-only -O2
+  - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fsyntax-only -O2
+  - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak clangbuiltlinux/ubuntu:latest clang++-11 cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Weverything -Werror -fsyntax-only -O2
   - cppcheck --inconclusive --enable=all cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp
   - if [ $(clang-format -style=file cpp/template/weak/ClasseA.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseA.cpp | diff -pu cpp/template/weak/ClasseA.cpp - ; exit 1; fi
   - if [ $(clang-format -style=file cpp/template/weak/ClasseB.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseB.cpp | diff -pu cpp/template/weak/ClasseB.cpp - ; exit 1; fi
@@ -32,4 +37,6 @@ script:
   - if [ $(clang-format -style=file cpp/template/weak/ClasseB.h -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseB.h | diff -pu cpp/template/weak/ClasseB.h - ; exit 1; fi
   - if [ $(clang-format -style=file cpp/template/weak/main.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/main.cpp | diff -pu cpp/template/weak/main.cpp - ; exit 1; fi
   - if [ $(clang-format -style=file cpp/template/weak/Template.h -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/Template.h | diff -pu cpp/template/weak/Template.h - ; exit 1; fi
+  - cd cpp; mkdir buildcpp; cd buildcpp; CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake ..; make
+  - python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py
   
