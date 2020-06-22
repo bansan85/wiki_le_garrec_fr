@@ -4,9 +4,6 @@
 
 int main()
 {
-  A a;
-  B b;
-
-  a.go();
-  b.go();
+  A::go();
+  B::go();
 }

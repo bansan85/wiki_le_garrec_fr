@@ -3,5 +3,5 @@
 class B
 {
 public:
-  void go();
+  static void go();
 };

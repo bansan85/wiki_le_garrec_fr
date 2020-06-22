@@ -5,6 +5,5 @@
 
 void A::go()
 {
-  Entete e;
-  e.go();
+  Entete::go();
 }

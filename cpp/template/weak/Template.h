@@ -5,7 +5,7 @@
 class Entete
 {
 public:
-  void go()
+  static void go()
   {
 #ifdef HACK
     std::cout << "A" << std::endl;
