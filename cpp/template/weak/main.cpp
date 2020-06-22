@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "ClasseA.h"
 #include "ClasseB.h"
 
