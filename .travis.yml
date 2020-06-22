@@ -7,8 +7,11 @@ dist: bionic
 
 addons:
   apt:
+    sources:
+    - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ focal main'
     packages:
     - cppcheck
+    # clang-format is not embedded in clangbuiltlinux/ubuntu:latest
     - clang-format
 
 before_install:
