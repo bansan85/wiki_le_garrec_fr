@@ -2,6 +2,6 @@
 
 class A
 {
-public:
+ public:
   static void go();
 };

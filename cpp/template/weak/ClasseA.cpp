@@ -1,9 +1,6 @@
 #define HACK
 
-#include "Template.h"
 #include "ClasseA.h"
+#include "Template.h"
 
-void A::go()
-{
-  Entete::go();
-}
+void A::go() { Entete::go(); }

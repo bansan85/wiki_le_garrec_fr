@@ -4,7 +4,7 @@
 
 class Entete
 {
-public:
+ public:
   static void go()
   {
 #ifdef HACK
