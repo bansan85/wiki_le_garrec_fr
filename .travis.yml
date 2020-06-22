@@ -3,12 +3,21 @@ language: cpp
 services:
   - docker
 
+dist: bionic
+
+addons:
+  apt:
+    packages:
+    - cppcheck
+
 before_install:
   - docker pull gcc:latest
   - docker pull clangbuiltlinux/ubuntu:latest
   - docker run --rm gcc:latest g++ --version
   - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
+  - cppcheck --version
 
 script:
   - docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fsyntax-only -O2
   - docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp clangbuiltlinux/ubuntu:latest clang++-11 cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Weverything -Werror -fsyntax-only -O2
+  - cppcheck --inconclusive --enable=all cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp
