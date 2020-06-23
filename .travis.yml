@@ -12,7 +12,10 @@ addons:
     packages:
     - cppcheck
     # clang is needed to generate compile_commands.json with cmake.
-    - clang
+    - clang-10
+    # update gcc to the latest version
+    - gcc-10
+    - g++-10
     # clang-format/clang-tidy is not embedded in clangbuiltlinux/ubuntu:latest
     - clang-format
     - clang-tidy
@@ -21,25 +24,30 @@ addons:
 
 before_install:
   # latest published version.
-  - docker pull gcc:latest
+  # - docker pull gcc:latest
   # master version. Does not include clang-format/clang-tidy.
-  - docker pull clangbuiltlinux/ubuntu:latest
-  - docker run --rm gcc:latest g++ --version
-  - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
+  # - docker pull clangbuiltlinux/ubuntu:latest
+  # - docker run --rm gcc:latest g++ --version
+  # - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
   - cppcheck --version
   - clang-format --version
 
 script:
-  - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fanalyzer -O2
-  - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak clangbuiltlinux/ubuntu:latest clang++-11 cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Weverything -Werror -fsyntax-only -O2
-  - cppcheck --inconclusive --enable=all cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp
-  - if [ $(clang-format -style=file cpp/template/weak/ClasseA.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseA.cpp | diff -pu cpp/template/weak/ClasseA.cpp - ; exit 1; fi
-  - if [ $(clang-format -style=file cpp/template/weak/ClasseB.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseB.cpp | diff -pu cpp/template/weak/ClasseB.cpp - ; exit 1; fi
-  - if [ $(clang-format -style=file cpp/template/weak/ClasseA.h -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseA.h | diff -pu cpp/template/weak/ClasseA.h - ; exit 1; fi
-  - if [ $(clang-format -style=file cpp/template/weak/ClasseB.h -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/ClasseB.h | diff -pu cpp/template/weak/ClasseB.h - ; exit 1; fi
-  - if [ $(clang-format -style=file cpp/template/weak/main.cpp -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/main.cpp | diff -pu cpp/template/weak/main.cpp - ; exit 1; fi
-  - if [ $(clang-format -style=file cpp/template/weak/Template.h -output-replacements-xml |grep "<replacement offset=" | wc -l) -ne "0" ]; then clang-format -style=file cpp/template/weak/Template.h | diff -pu cpp/template/weak/Template.h - ; exit 1; fi
-  - cd cpp; mkdir buildcpp; cd buildcpp; CC=/usr/bin/clang CXX=/usr/bin/clang++ CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include" cmake ..
+  # - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fanalyzer -O2
+  # - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak clangbuiltlinux/ubuntu:latest clang++-11 cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Weverything -Werror -fsyntax-only -O2
+
+  - mkdir buildcppgcc; cd buildcppgcc
+  - CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2" cmake ../cpp
+  - make
+  - cppcheck --inconclusive --enable=all --check-config --project=compile_commands.json
   - iwyu_tool -p . > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log ; exit 1; fi
+  - cd ..
+  
+  - mkdir buildcppclang; cd buildcppclang
+  - CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2" cmake ../cpp
+  - make
   - python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py
   - make clean; scan-build -v -o . make
+  - cppcheck --inconclusive --enable=all --check-config --project=compile_commands.json
+  - iwyu_tool -p . > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log ; exit 1; fi
+  - cd ..
