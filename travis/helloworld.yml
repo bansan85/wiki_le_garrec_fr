@@ -1,0 +1,43 @@
+# Language de programmation. On ne peut en sélectionner qu'un seul à la fois.
+language: cpp
+ 
+# Les éventuels services. Ici Docker.
+# Parfois, il faut utiliser l'installation via apt, parfois par services, au cas par cas.
+# Voir https://docs.travis-ci.com/user/database-setup/ pour quelques exemples.
+services:
+  - docker
+ 
+# Version de la distribution ubuntu.
+# Pour la liste des versions disponibles : https://docs.travis-ci.com/user/reference/linux/
+# Généralement, il n'y a que les version LTS et la dernière est souvent manquante.
+dist: bionic
+ 
+# Toute première étape : l'installation automatique des paquets.
+addons:
+  apt:
+    sources:
+    # Ici, je force l'utilisation de la dernière version du système d'exploitation.
+    # Ne pas faire un apt-get dist-upgrade. Ca prend beaucoup de bande passante, de temps et risque de générer un système pas très stable.
+    # Il est préférable d'indiquer un par un la liste des packets à mettre à jour.
+    - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ focal main universe'
+    packages:
+    - cppcheck
+ 
+# Généralement, on met dans before_install tout ce qu'il faut installer (images docker et packets).
+before_install:
+  - docker pull clangbuiltlinux/ubuntu:latest
+  - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
+  - cppcheck --version
+  - clang-format --version
+ 
+# Ici, c'est tous les scripts à exécuter.
+# Ils seront tous exécuté jusqu'au dernier.
+# Si l'un renvoie un code d'erreur, l'ensemble sera considéré comme failure.
+# Ici, tout est mis en vrac. Mais il est aussi possible de mettre les commandes dans un script bash.
+script:
+  - mkdir buildcppgcc; cd buildcppgcc
+  - CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2" cmake ../cpp
+  - make
+  - cppcheck --inconclusive --enable=all --check-config --project=compile_commands.json
+  - iwyu_tool -p . > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log ; exit 1; fi
+  - cd ..
