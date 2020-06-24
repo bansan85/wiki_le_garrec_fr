@@ -3,7 +3,7 @@ dist: bionic
 # services:
 #   - docker
 
-matrix:
+jobs:
   include:
     - language: cpp
 
@@ -64,3 +64,10 @@ matrix:
         - cmake ../cpp
         - make cmake_fmt
         - cd ..
+
+    - language: ruby
+      rvm: 2.7
+      before_install:
+        - gem install bundler
+      script:
+        - bash ./travis-lint-check.sh
