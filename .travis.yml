@@ -7,6 +7,10 @@ jobs:
   include:
     - language: cpp
 
+      env:
+      # PASSWORD_OPENSSL
+      - secure: "oFwwUc6mVA9/IcvLn8XT++P5NciwrSX3gHaW0gGObym3msYFf7L3yb9ROjh21KT6XbooJ+sh+3QetbziN2knvI3+3snnTg+2HZ/ALJxiNYuTZpsohArDPPVLAZkSBuPZUg2oceHdiInPuzpos+in4KBqRwCxHFjgQVZhXek+5Qu73F/46Jy7J8kTWNirZuxXC5eaWBkekcAXQQ8vEQtK8MwjOcA89b/Stx17KelTTeCxA1GRcSv4eBMjZD7X1j7s7JvoCfEwaAa0Q1CuAsbZ4hPUTNLHNUFr89LzQadvpJZrFGmwhuLKmkdo6TKtD4xYX8kl7fAh/xEKhFuiJjB+0dxLepyxmU81r/o3sg1UlUuvEXScD0ZI4w6Vd7C/apo9zmTIOB6cSa8qL3CeFkkflouT/pmKtR0fhqZBCUdEOMOKhUChDovveKOOoHyxOTmavKtvbjbuGx7dYhVPUNsDiH5qXQEf5kiQDDRKIC2uj/L812Sk9gNfZzHieX6sUPwDDmRUUkP/HFvrTBjN2TrjA9YwP0MQffKe+3Qcz6/iCL619JtDQre/cKmiflopRlU1+nbw+hI5VU790SQuHE32fuFANLtomOlqY5BsUPJBFjVZBtJA4txlH/mxk/WmtblxaTaxH2wRYM9JLElztjRGgt3PXanu/NA/7mDyLAGx+Ek="
+
       addons:
         apt:
           sources:
@@ -33,6 +37,16 @@ jobs:
         # - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
         - cppcheck --version
         - clang-format --version
+        # You must add options either openssl will says :
+        # *** WARNING : deprecated key derivation used.
+        - openssl aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -k "$PASSWORD_OPENSSL" -out travis/ci/github_wiki_le_garrec_fr.key -in travis/ci/github_wiki_le_garrec_fr.key.enc -d
+        # Open a connection to the authentication agent so ssh-add work.
+        - eval $(ssh-agent -s)
+        # ssh-add says:
+        # Permissions 0664 for 'travis/ci/github_wiki_le_garrec_fr.key' are too open.
+        # It is required that your private key files are NOT accessible by others.
+        - chmod 600 travis/ci/github_wiki_le_garrec_fr.key
+        - ssh-add travis/ci/github_wiki_le_garrec_fr.key
 
       script:
         # - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fanalyzer -O2
@@ -53,6 +67,17 @@ jobs:
         - cppcheck --inconclusive --enable=all --check-config --project=compile_commands.json
         - iwyu_tool -p . > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log ; exit 1; fi
         - cd ..
+
+        - git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git
+        - mkdir -p wiki_le_garrec_fr_travis/linker/weak
+        - nm --demangle buildcppgcc/template/weak/CMakeFiles/templateweak.dir/ClasseA.cpp.o > wiki_le_garrec_fr_travis/linker/weak/ClasseA.cpp.txt
+        - nm --demangle buildcppgcc/template/weak/CMakeFiles/templateweak.dir/ClasseB.cpp.o > wiki_le_garrec_fr_travis/linker/weak/ClasseB.cpp.txt
+        - cd wiki_le_garrec_fr_travis
+        - git config --global user.name "Travis"
+        - git config --global user.email "travis-ci@le-garrec.fr"
+        - git add linker/weak/ClasseA.cpp.txt linker/weak/ClasseB.cpp.txt
+        - git commit -m "Update linker nm from commit $TRAVIS_COMMIT"
+        - git push
 
     - language: python
       python: 3.8
