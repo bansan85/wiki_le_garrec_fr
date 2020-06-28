@@ -91,7 +91,13 @@ jobs:
 
     - language: ruby
       rvm: 2.7
+      env:
+      # GITHUB_PERSONAL_TOKEN
+      - secure: "RLGSrpiyYZILp6urxYkaRLu2UvtF+eyqZ0PUDxFgUgFHXCW/AaXBOkd8y4ECzBEKHD5DdIv+y4bGkYInVyoH4onDYG/MKQJzgvrsuqz2BHqsSSUIwBtKtISgSAgSwhM/B8Na3NqjypliVsGc7lL+T51ORxG1g5h3cOjLq0/Ob/TrUxkdK5WC9pxblS89KlPxXO4YVgq5p6QPzvrzgEXl9OCHCIKa1qog+OuZ8EEx0HQJ9kPBfiz8wsHCAUpHR/0a2wb3TQj9ZQZv5mtzasQ95a8om6ha1FNhjL/1PuC3nnvk8iYpHSK2hJ54TmZ+er1o/QDLgN1yjU9v9UgZkIIqWCatvHaY+BMXCjVHZWpI9tnOLqz9vcuxNF3IXYl+e/d0riJXh1ZIcUB1qbg10mcN/X9U4W1w/Fe3s8uiAaLZ6bH0Wd+9qhXYbNqhT05VH+8UtB1pnXPrI0u9Uhn8DDW5yC7sVMAElBS508kcLMGFwOl8fi/X4RKbGi2GS9b/6YDCaX5d0nHX0gGOVQsOBQLVhXlD6o0Zm57p3z1HZK/s03MV/l7RI/h4ktiRJItspUhzGTCEm8eBl2JWASmb2PCrXrp1YkItlgHMqs1X02OWDfqvMBp9sUkFA5vOjw9sej6b0qrqsBHpn9uqEgQS4wtwP3ym1/HaiaOOmMmHc/dsjqw="
       before_install:
         - gem install bundler
       script:
+        # log before travis lint to avoid :
+        # invalid access token - try running travis login
+        - travis login --pro --github-token $GITHUB_PERSONAL_TOKEN
         - bash ./travis-lint-check.sh
