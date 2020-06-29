@@ -76,8 +76,7 @@ jobs:
         - git config --global user.name "Travis"
         - git config --global user.email "travis-ci@le-garrec.fr"
         - git add linker/weak/ClasseA.cpp.txt linker/weak/ClasseB.cpp.txt
-        - git commit -m "Update linker nm from commit $TRAVIS_COMMIT"
-        - git push
+        - if [ $(git diff-index --name-only HEAD --) ]; then git commit -m "Update linker nm from commit $TRAVIS_COMMIT"; git push; fi
 
     - language: python
       python: 3.8
