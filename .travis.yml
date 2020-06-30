@@ -100,3 +100,11 @@ jobs:
         # invalid access token - try running travis login
         - travis login --pro --github-token $GITHUB_PERSONAL_TOKEN
         - bash ./travis-lint-check.sh
+
+    - language: node_js
+      node_js: node
+      before_install:
+        - npm install --save-dev stylelint stylelint-config-standard
+      script:
+        - cd css
+        - npx stylelint **/*.css

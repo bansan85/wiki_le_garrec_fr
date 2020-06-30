@@ -1,0 +1,6 @@
+#programmation_fonctionnelle:before
+{
+  content: url(/lib/exe/fetch.php?media=:dokuwiki:images:lambda16.png);
+  vertical-align: text-top;
+  margin-right: 0.5em;
+}
