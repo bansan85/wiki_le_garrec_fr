@@ -53,7 +53,7 @@ jobs:
         # - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak clangbuiltlinux/ubuntu:latest clang++-11 cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Weverything -Werror -fsyntax-only -O2
 
         - mkdir buildcppgcc; cd buildcppgcc
-        - CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2" cmake ../cpp
+        - CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2 -P" cmake ../cpp
         - make
         - cppcheck --inconclusive --enable=all --check-config --project=compile_commands.json
         - iwyu_tool -p . > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log ; exit 1; fi
@@ -69,14 +69,21 @@ jobs:
         - cd ..
 
         - git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git
-        - mkdir -p wiki_le_garrec_fr_travis/linker/weak
+        - mkdir -p wiki_le_garrec_fr_travis/linker/weak wiki_le_garrec_fr_travis/cpp/preprocessor
+        
         - nm --demangle buildcppgcc/template/weak/CMakeFiles/templateweak.dir/ClasseA.cpp.o > wiki_le_garrec_fr_travis/linker/weak/ClasseA.cpp.txt
         - nm --demangle buildcppgcc/template/weak/CMakeFiles/templateweak.dir/ClasseB.cpp.o > wiki_le_garrec_fr_travis/linker/weak/ClasseB.cpp.txt
         - cd wiki_le_garrec_fr_travis
         - git config --global user.name "Travis"
         - git config --global user.email "travis-ci@le-garrec.fr"
         - git add linker/weak/ClasseA.cpp.txt linker/weak/ClasseB.cpp.txt
-        - if [ $(git diff-index --name-only HEAD --) ]; then git commit -m "Update linker nm from commit $TRAVIS_COMMIT"; git push; fi
+        - cd ..
+
+        - cp buildcppgcc/preprocessor/CMakeFiles/str_helper.dir/str_helper.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/
+        - cd wiki_le_garrec_fr_travis
+        - git add cpp/preprocessor/str_helper.cpp.i
+        - if [ $(git diff-index --name-only HEAD --) ]; then git commit -m "$TRAVIS_COMMIT_MESSAGE" -m "Update from $TRAVIS_COMMIT_RANGE"; git push; fi
+        - cd ..
 
     - language: python
       python: 3.8
