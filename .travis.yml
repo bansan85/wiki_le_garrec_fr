@@ -80,8 +80,10 @@ jobs:
         - cd ..
 
         - cp buildcppgcc/preprocessor/CMakeFiles/str_helper.dir/str_helper.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/
+        - cp buildcppgcc/preprocessor/CMakeFiles/macro_and_spaces_internal.dir/macro_and_spaces.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/
         - cd wiki_le_garrec_fr_travis
         - git add cpp/preprocessor/str_helper.cpp.i
+        - git add cpp/preprocessor/macro_and_spaces.cpp.i
         - if [ $(git diff-index --name-only HEAD --) ]; then git commit -m "$TRAVIS_COMMIT_MESSAGE" -m "Update from $TRAVIS_COMMIT_RANGE"; git push; fi
         - cd ..
 
