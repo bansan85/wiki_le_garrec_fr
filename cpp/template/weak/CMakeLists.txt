@@ -1,5 +1,6 @@
 project(templateweak)
 add_executable(templateweak ClasseA.cpp ClasseB.cpp main.cpp)
+target_compile_options(templateweak PRIVATE -O0)
 add_custom_command(
   TARGET templateweak
   PRE_LINK
