@@ -69,14 +69,14 @@ jobs:
         - cd ..
 
         - git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git
-        - mkdir -p wiki_le_garrec_fr_travis/linker/weak wiki_le_garrec_fr_travis/cpp/preprocessor
+        - mkdir -p wiki_le_garrec_fr_travis/cpp/linker/weak wiki_le_garrec_fr_travis/cpp/preprocessor
         
-        - nm --demangle buildcppgcc/template/weak/CMakeFiles/templateweak.dir/ClasseA.cpp.o > wiki_le_garrec_fr_travis/linker/weak/ClasseA.cpp.txt
-        - nm --demangle buildcppgcc/template/weak/CMakeFiles/templateweak.dir/ClasseB.cpp.o > wiki_le_garrec_fr_travis/linker/weak/ClasseB.cpp.txt
+        - nm --demangle buildcppgcc/linker/weak/CMakeFiles/linkerweak.dir/ClasseA.cpp.o > wiki_le_garrec_fr_travis/cpp/linker/weak/ClasseA.cpp.txt
+        - nm --demangle buildcppgcc/linker/weak/CMakeFiles/linkerweak.dir/ClasseB.cpp.o > wiki_le_garrec_fr_travis/cpp/linker/weak/ClasseB.cpp.txt
         - cd wiki_le_garrec_fr_travis
         - git config --global user.name "Travis"
         - git config --global user.email "travis-ci@le-garrec.fr"
-        - git add linker/weak/ClasseA.cpp.txt linker/weak/ClasseB.cpp.txt
+        - git add cpp/linker/weak/ClasseA.cpp.txt cpp/linker/weak/ClasseB.cpp.txt
         - cd ..
 
         - cp buildcppgcc/preprocessor/CMakeFiles/str_helper.dir/str_helper.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/
