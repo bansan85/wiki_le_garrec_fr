@@ -84,8 +84,7 @@ jobs:
         - cd wiki_le_garrec_fr_travis
         - git add cpp/preprocessor/str_helper.cpp.i
         - git add cpp/preprocessor/macro_and_spaces.cpp.i
-        # Don't use TRAVIS_COMMIT_RANGE. When rebase, the "from commit" is the commit before rebase, not the parent commit.
-        - if [ $(git diff-index --name-only HEAD --) ]; then git commit -m "$TRAVIS_COMMIT_MESSAGE" -m "Update from $TRAVIS_COMMIT"; git push; fi
+        - if [ ! -z "$(git diff-index --name-only HEAD --)" ]; then git commit -m "$TRAVIS_COMMIT_MESSAGE" -m "Update from $TRAVIS_COMMIT"; git push; fi
         - cd ..
 
     - language: python
