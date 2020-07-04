@@ -7,6 +7,6 @@ add_custom_command(
 
 project(macro_and_spaces_internal)
 add_executable(macro_and_spaces_internal EXCLUDE_FROM_ALL macro_and_spaces.cpp)
-target_compile_options(macro_and_spaces_internal PRIVATE -Wunused-value
-                                                         -Wunreachable-code)
+target_compile_options(macro_and_spaces_internal PRIVATE -Wno-unused-value
+                                                         -Wno-unreachable-code)
 add_custom_target(macro_and_spaces ALL COMMAND make macro_and_spaces.cpp.i)
