@@ -2,10 +2,11 @@
 #include <chrono>
 #include <iostream>
 #include <string>
+#include <thread>
 
 #include "executor.h"
 
-std::atomic<int> test = 0;
+std::atomic<int> test{0};
 
 int main()
 {

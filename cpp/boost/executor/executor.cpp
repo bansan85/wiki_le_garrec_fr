@@ -77,7 +77,7 @@ class PriorityScheduler::PrioritySchedulerImpl
   std::priority_queue<std::shared_ptr<item_base>,
                       std::vector<std::shared_ptr<item_base>>, item_comp>
       queue_;
-  std::atomic<bool> stopped_ = false;
+  std::atomic<bool> stopped_{false};
 };
 
 class PriorityScheduler::ExecutorType::ExecutorTypeImpl

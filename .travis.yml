@@ -27,6 +27,7 @@ jobs:
           - clang-tidy
           - clang-tools
           - iwyu
+          - libboost-dev
 
       before_install:
         # latest published version.
@@ -89,6 +90,10 @@ jobs:
 
     - language: python
       python: 3.8
+      addons:
+        apt:
+          packages:
+          - libboost-dev
       before_install:
         - python3 -m pip install --upgrade pip
       script:

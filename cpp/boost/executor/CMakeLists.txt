@@ -1,0 +1,7 @@
+project(boostexecutor)
+find_package(Boost)
+if(NOT Boost_FOUND)
+  message(FATAL_ERROR "Failed to found boost. Executor not generated.")
+endif()
+add_executable(boostexecutor executor.cpp main.cpp)
+target_include_directories(boostexecutor PRIVATE ${Boost_INCLUDE_DIRS})
