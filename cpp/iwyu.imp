@@ -1,0 +1,6 @@
+[
+  { include: ["<boost/asio/impl/dispatch.hpp>",                         "private", "<boost/asio/dispatch.hpp>",                         "public"] },
+  { include: ["<boost/asio/impl/execution_context.hpp>",                "private", "<boost/asio/execution_context.hpp>",                "public"] },
+  { include: ["<boost/asio/impl/system_executor.hpp>",                  "private", "<boost/asio/system_executor.hpp>",                  "public"] },
+  { include: ["<boost/asio/impl/execution_context.ipp>",                "private", "<boost/asio/execution_context.hpp>",                "public"] }
+]

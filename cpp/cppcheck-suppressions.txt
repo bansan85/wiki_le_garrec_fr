@@ -1,2 +1,1 @@
-unusedFunction:/home/travis/build/bansan85/wiki_le_garrec_fr/cpp/boost/executor/executor.cpp:108
-unusedFunction:/home/travis/build/bansan85/wiki_le_garrec_fr/cpp/boost/executor/executor.cpp:109
+unusedFunction:/home/travis/build/bansan85/wiki_le_garrec_fr/cpp/boost/executor/executor.cpp

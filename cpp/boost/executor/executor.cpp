@@ -1,8 +1,14 @@
 #include "executor.h"
 
+#include <algorithm>
 #include <atomic>
-#include <boost/asio.hpp>
+#include <boost/asio/dispatch.hpp>
+#include <boost/asio/execution_context.hpp>
+#include <chrono>
+#include <condition_variable>
+#include <mutex>
 #include <queue>
+#include <utility>
 #include <vector>
 
 struct PriorityScheduler::PrioritySchedulerImpl final

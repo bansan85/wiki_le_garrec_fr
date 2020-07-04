@@ -1,7 +1,4 @@
-#include <atomic>
-#include <chrono>
 #include <iostream>
-#include <string>
 #include <thread>
 
 #include "executor.h"
