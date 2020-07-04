@@ -102,6 +102,7 @@ jobs:
         - make cmake_fmt
         - cd ..
         - bash ./ini-lint-check.sh
+        - shellcheck **/*.sh
 
     - language: ruby
       rvm: 2.7
