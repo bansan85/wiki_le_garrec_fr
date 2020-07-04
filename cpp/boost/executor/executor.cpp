@@ -5,17 +5,19 @@
 #include <queue>
 #include <vector>
 
-class PriorityScheduler::PrioritySchedulerImpl
+struct PriorityScheduler::PrioritySchedulerImpl final
     : public boost::asio::execution_context
 {
- public:
   void run()
   {
     std::unique_lock<std::mutex> lock(mutex_);
     for (;;)
     {
       condition_.wait(lock, [&] { return stopped_ || !queue_.empty(); });
-      if (stopped_) return;
+      if (stopped_)
+      {
+        return;
+      }
       std::shared_ptr<item_base> p(queue_.top());
       queue_.pop();
       lock.unlock();
@@ -33,7 +35,7 @@ class PriorityScheduler::PrioritySchedulerImpl
   struct item_base
   {
     // Priorité de l'ordre.
-    int priority_;
+    int priority_ = 0;
     // Pour trier les item ayant le même ordre.
     std::chrono::high_resolution_clock::time_point timestamp;
     // Fonction a exécuter dans un wrapper compatible avec
@@ -42,9 +44,9 @@ class PriorityScheduler::PrioritySchedulerImpl
   };
 
   template <class Func>
-  struct item : item_base
+  struct item final : item_base
   {
-    item(int pri, Func f) : function_(std::move(f))
+    item(int pri, Func&& f) : function_(std::forward<Func>(f))
     {
       priority_ = pri;
       execute_ = [](std::shared_ptr<item_base>& p) {
@@ -55,6 +57,7 @@ class PriorityScheduler::PrioritySchedulerImpl
       timestamp = std::chrono::high_resolution_clock::now();
     }
 
+   private:
     Func function_;
   };
 
@@ -63,44 +66,47 @@ class PriorityScheduler::PrioritySchedulerImpl
   struct item_comp
   {
     bool operator()(const std::shared_ptr<item_base>& a,
-                    const std::shared_ptr<item_base>& b)
+                    const std::shared_ptr<item_base>& b) const
     {
       if (a->priority_ != b->priority_)
+      {
         return a->priority_ < b->priority_;
-      else
-        return a->timestamp > b->timestamp;
+      }
+      return a->timestamp > b->timestamp;
     }
   };
 
+  // NOLINTNEXTLINE
   std::mutex mutex_;
+  // NOLINTNEXTLINE
   std::condition_variable condition_;
   std::priority_queue<std::shared_ptr<item_base>,
                       std::vector<std::shared_ptr<item_base>>, item_comp>
+      // NOLINTNEXTLINE
       queue_;
+
+ private:
   std::atomic<bool> stopped_{false};
 };
 
-class PriorityScheduler::ExecutorType::ExecutorTypeImpl
+struct PriorityScheduler::ExecutorType::ExecutorTypeImpl
 {
  public:
-  ExecutorTypeImpl(PriorityScheduler& ctx, int pri) noexcept
+  ExecutorTypeImpl(PriorityScheduler* ctx, int pri) noexcept
       : context_(ctx), priority_(pri)
   {
   }
+  ~ExecutorTypeImpl() = default;
 
-  ExecutorTypeImpl(ExecutorTypeImpl&& other) noexcept = default;
+  ExecutorTypeImpl(ExecutorTypeImpl&& other) noexcept = delete;
   ExecutorTypeImpl(ExecutorTypeImpl const& other) = delete;
-  ExecutorTypeImpl& operator=(ExecutorTypeImpl&& other) noexcept = default;
+  ExecutorTypeImpl& operator=(ExecutorTypeImpl&& other) noexcept = delete;
   ExecutorTypeImpl& operator=(ExecutorTypeImpl const& other) = delete;
 
   // Pour boost::asio::dispatch
-  PriorityScheduler& context() const noexcept { return context_; }
-
-  // Pour boost::asio::dispatch
-  void on_work_started() const noexcept {}
-
-  // Pour boost::asio::dispatch
-  void on_work_finished() const noexcept {}
+  const PriorityScheduler& context() const noexcept { return *context_; }
+  static void on_work_started() {}
+  static void on_work_finished() {}
 
   // Partout Func est boost::asio::detail::work_dispatcher<void()>
   template <class Func, class Alloc>
@@ -110,7 +116,7 @@ class PriorityScheduler::ExecutorType::ExecutorTypeImpl
   }
 
  private:
-  PriorityScheduler& context_;
+  PriorityScheduler* context_;
   int priority_;
 
   template <class Func, class Alloc>
@@ -125,10 +131,10 @@ class PriorityScheduler::ExecutorType::ExecutorTypeImpl
             priority_, std::forward<Func>(f)));
     // On sécurise seulement queue_.
     {
-      std::lock_guard<std::mutex> lock(context_.impl_->mutex_);
-      context_.impl_->queue_.push(p);
+      std::lock_guard<std::mutex> lock(context_->impl_->mutex_);
+      context_->impl_->queue_.push(p);
     }
-    context_.impl_->condition_.notify_one();
+    context_->impl_->condition_.notify_one();
   }
 
   // Pour boost::asio::dispatch
@@ -139,7 +145,7 @@ class PriorityScheduler::ExecutorType::ExecutorTypeImpl
   }
 };
 
-PriorityScheduler::ExecutorType::ExecutorType(PriorityScheduler& ctx, int pri)
+PriorityScheduler::ExecutorType::ExecutorType(PriorityScheduler* ctx, int pri)
     : impl_(std::make_unique<ExecutorTypeImpl>(ctx, pri))
 {
 }
@@ -149,14 +155,15 @@ PriorityScheduler::ExecutorType::~ExecutorType() = default;
 PriorityScheduler::ExecutorType::ExecutorType(ExecutorType&& other) noexcept =
     default;
 
-PriorityScheduler& PriorityScheduler::ExecutorType::context() const noexcept
+const PriorityScheduler& PriorityScheduler::ExecutorType::context() const
+    noexcept
 {
   return impl_->context();
 }
 
 void PriorityScheduler::ExecutorType::add(std::function<void()> f)
 {
-  boost::asio::dispatch(*impl_, f);
+  boost::asio::dispatch(*impl_, f, nullptr);
 }
 
 bool operator==(const PriorityScheduler::ExecutorType& a,
@@ -181,7 +188,7 @@ PriorityScheduler::~PriorityScheduler() = default;
 PriorityScheduler::ExecutorType PriorityScheduler::get_executor(
     int pri) noexcept
 {
-  return PriorityScheduler::ExecutorType(*this, pri);
+  return PriorityScheduler::ExecutorType(this, pri);
 }
 
 void PriorityScheduler::run() { impl_->run(); }

@@ -3,14 +3,14 @@
 #include <functional>
 #include <memory>
 
-class PriorityScheduler
+class PriorityScheduler final
 {
  public:
   // Classe satisfaisant l'interface Executor.
-  class ExecutorType
+  class ExecutorType final
   {
    public:
-    ExecutorType(PriorityScheduler& ctx, int pri);
+    ExecutorType(PriorityScheduler* ctx, int pri);
     ~ExecutorType();
 
     ExecutorType(ExecutorType&& other) noexcept;
@@ -19,17 +19,22 @@ class PriorityScheduler
     ExecutorType& operator=(ExecutorType const& other) = delete;
 
     // Pour boost::asio::dispatch
-    PriorityScheduler& context() const noexcept;
+    const PriorityScheduler& context() const noexcept;
 
     void add(std::function<void()> f);
 
    private:
-    class ExecutorTypeImpl;
+    struct ExecutorTypeImpl;
     std::unique_ptr<ExecutorTypeImpl> impl_;
   };
 
   PriorityScheduler();
   ~PriorityScheduler();
+
+  PriorityScheduler(PriorityScheduler&& other) noexcept = delete;
+  PriorityScheduler(PriorityScheduler const& other) = delete;
+  PriorityScheduler& operator=(PriorityScheduler&& other) noexcept = delete;
+  PriorityScheduler& operator=(PriorityScheduler const& other) = delete;
 
   ExecutorType get_executor(int pri) noexcept;
 
@@ -38,7 +43,7 @@ class PriorityScheduler
   void stop();
 
  private:
-  class PrioritySchedulerImpl;
+  struct PrioritySchedulerImpl;
   std::unique_ptr<PrioritySchedulerImpl> impl_;
 };
 

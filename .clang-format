@@ -19,7 +19,7 @@ AlwaysBreakBeforeMultilineStrings: true
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: true
 BinPackParameters: true
-BraceWrapping:   
+BraceWrapping:
   AfterClass:      true
   AfterControlStatement: true
   AfterEnum:       true

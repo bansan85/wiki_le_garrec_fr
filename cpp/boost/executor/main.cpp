@@ -6,8 +6,6 @@
 
 #include "executor.h"
 
-std::atomic<int> test{0};
-
 int main()
 {
   PriorityScheduler sched;
