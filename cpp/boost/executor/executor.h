@@ -10,16 +10,16 @@ class PriorityScheduler
   class ExecutorType
   {
    public:
-    ExecutorType(PriorityScheduler &ctx, int pri);
+    ExecutorType(PriorityScheduler& ctx, int pri);
     ~ExecutorType();
 
-    ExecutorType(ExecutorType &&other) noexcept;
-    ExecutorType(ExecutorType const &other) = delete;
-    ExecutorType &operator=(ExecutorType &&other) noexcept = delete;
-    ExecutorType &operator=(ExecutorType const &other) = delete;
+    ExecutorType(ExecutorType&& other) noexcept;
+    ExecutorType(ExecutorType const& other) = delete;
+    ExecutorType& operator=(ExecutorType&& other) noexcept = delete;
+    ExecutorType& operator=(ExecutorType const& other) = delete;
 
     // Pour boost::asio::dispatch
-    PriorityScheduler &context() const noexcept;
+    PriorityScheduler& context() const noexcept;
 
     void add(std::function<void()> f);
 
@@ -42,8 +42,8 @@ class PriorityScheduler
   std::unique_ptr<PrioritySchedulerImpl> impl_;
 };
 
-bool operator==(const PriorityScheduler::ExecutorType &a,
-                const PriorityScheduler::ExecutorType &b) noexcept;
+bool operator==(const PriorityScheduler::ExecutorType& a,
+                const PriorityScheduler::ExecutorType& b) noexcept;
 
-bool operator!=(const PriorityScheduler::ExecutorType &a,
-                const PriorityScheduler::ExecutorType &b) noexcept;
+bool operator!=(const PriorityScheduler::ExecutorType& a,
+                const PriorityScheduler::ExecutorType& b) noexcept;
