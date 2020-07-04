@@ -63,7 +63,7 @@ jobs:
         - CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2" cmake ../cpp
         - make
         - python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py
-        - make clean; scan-build -v -o . make
+        - make clean; scan-build -v -v -v -o . make
         - cppcheck --inconclusive --enable=all --check-config --project=compile_commands.json
         - iwyu_tool -p . > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log ; exit 1; fi
         - cd ..
