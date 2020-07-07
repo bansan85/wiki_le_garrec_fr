@@ -61,7 +61,7 @@ jobs:
         - cd ..
 
         - mkdir buildcppclang; cd buildcppclang
-        - CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2 -Wno-c++98-compat -Wno-padded" cmake ../cpp
+        - CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2 -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic" cmake ../cpp
         - make
         - python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py
         - make clean; scan-build -v -v -v -o . make
