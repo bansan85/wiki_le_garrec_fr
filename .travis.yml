@@ -86,6 +86,7 @@ jobs:
         - cd wiki_le_garrec_fr_travis
         - git add cpp/preprocessor/str_helper.cpp.i
         - git add cpp/preprocessor/macro_and_spaces.cpp.i
+        - git add cpp/preprocessor/bracket.cpp.i
         - if [ ! -z "$(git diff-index --name-only HEAD --)" ]; then git commit -m "$TRAVIS_COMMIT_MESSAGE" -m "Update from $TRAVIS_COMMIT"; git push; fi
         - cd ..
 
