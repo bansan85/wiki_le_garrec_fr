@@ -10,3 +10,7 @@ add_executable(macro_and_spaces_internal EXCLUDE_FROM_ALL macro_and_spaces.cpp)
 target_compile_options(macro_and_spaces_internal PRIVATE -Wno-unused-value
                                                          -Wno-unreachable-code)
 add_custom_target(macro_and_spaces ALL COMMAND make macro_and_spaces.cpp.i)
+
+project(bracket_internal)
+add_executable(bracket_internal EXCLUDE_FROM_ALL bracket.cpp)
+add_custom_target(bracket ALL COMMAND make bracket.cpp.i)
