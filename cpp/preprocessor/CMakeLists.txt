@@ -13,4 +13,6 @@ add_custom_target(macro_and_spaces ALL COMMAND make macro_and_spaces.cpp.i)
 
 project(bracket_internal)
 add_executable(bracket_internal EXCLUDE_FROM_ALL bracket.cpp)
+target_compile_options(bracket_internal
+                       PRIVATE -Wno-gnu-zero-variadic-macro-arguments)
 add_custom_target(bracket ALL COMMAND make bracket.cpp.i)
