@@ -70,14 +70,20 @@ jobs:
         - cd ..
 
         - git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git
-        - mkdir -p wiki_le_garrec_fr_travis/cpp/linker/weak wiki_le_garrec_fr_travis/cpp/preprocessor
+        - mkdir -p wiki_le_garrec_fr_travis/cpp/linker/weak wiki_le_garrec_fr_travis/cpp/preprocessor wiki_le_garrec_fr_travis/cpp/attribute
         
         - nm --demangle buildcppgcc/linker/weak/CMakeFiles/linkerweak.dir/ClasseA.cpp.o > wiki_le_garrec_fr_travis/cpp/linker/weak/ClasseA.cpp.txt
         - nm --demangle buildcppgcc/linker/weak/CMakeFiles/linkerweak.dir/ClasseB.cpp.o > wiki_le_garrec_fr_travis/cpp/linker/weak/ClasseB.cpp.txt
+        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure1_internal.dir/pure1.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure1.cpp.asm
+        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure2_internal.dir/pure2.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure2.cpp.asm
+        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure3_internal.dir/pure3.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure3.cpp.asm
+        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure4_internal.dir/pure4.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure4.cpp.asm
+        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure5_internal.dir/pure5.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure5.cpp.asm
+        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure6_internal.dir/pure6.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure6.cpp.asm
         - cd wiki_le_garrec_fr_travis
         - git config --global user.name "Travis"
         - git config --global user.email "travis-ci@le-garrec.fr"
-        - git add cpp/linker/weak/ClasseA.cpp.txt cpp/linker/weak/ClasseB.cpp.txt
+        - git add cpp/linker/weak/ClasseA.cpp.txt cpp/linker/weak/ClasseB.cpp.txt cpp/attribute/pure{1,2,3,4,5,6}.cpp.asm
         - cd ..
 
         - cp buildcppgcc/preprocessor/CMakeFiles/str_helper.dir/str_helper.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/

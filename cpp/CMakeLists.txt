@@ -4,6 +4,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # To better read travis log.
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+add_subdirectory(attribute)
 add_subdirectory(boost)
 add_subdirectory(linker)
 add_subdirectory(preprocessor)
