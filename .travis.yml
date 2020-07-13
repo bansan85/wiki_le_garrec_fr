@@ -129,7 +129,7 @@ jobs:
     - language: node_js
       node_js: node
       before_install:
-        - npm install --save-dev stylelint stylelint-config-standard
+        - npm install --no-save stylelint stylelint-config-standard
       script:
         - cd css
         - npx stylelint **/*.css
