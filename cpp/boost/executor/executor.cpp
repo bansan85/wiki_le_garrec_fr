@@ -105,7 +105,7 @@ struct PriorityScheduler::ExecutorType::ExecutorTypeImpl
   ~ExecutorTypeImpl() = default;
 
   ExecutorTypeImpl(ExecutorTypeImpl&& other) noexcept = delete;
-  ExecutorTypeImpl(ExecutorTypeImpl const& other) = delete;
+  ExecutorTypeImpl(ExecutorTypeImpl const& other) = default;
   ExecutorTypeImpl& operator=(ExecutorTypeImpl&& other) noexcept = delete;
   ExecutorTypeImpl& operator=(ExecutorTypeImpl const& other) = delete;
 
