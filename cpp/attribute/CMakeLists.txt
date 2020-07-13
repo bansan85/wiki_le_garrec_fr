@@ -21,3 +21,6 @@ add_custom_target(pure5 ALL COMMAND make pure5.cpp.o)
 project(pure6_internal)
 add_executable(pure6_internal EXCLUDE_FROM_ALL pure6.cpp)
 add_custom_target(pure6 ALL COMMAND make pure6.cpp.o)
+
+project(weak1)
+add_executable(weak1 weak1.cpp)
