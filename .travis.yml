@@ -56,6 +56,8 @@ jobs:
         - mkdir buildcppgcc; cd buildcppgcc
         - CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2 -P" cmake ../cpp
         - make
+        - git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git
+        - make data_for_travis
         - cppcheck --inconclusive --enable=all --project=compile_commands.json --error-exitcode=1 --inline-suppr --suppressions-list=../cpp/cppcheck-suppressions.txt
         - iwyu_tool -p . -- -Xiwyu --mapping_file=/home/travis/build/bansan85/wiki_le_garrec_fr/cpp/iwyu.imp > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log; false; fi
         - cd ..
@@ -69,34 +71,13 @@ jobs:
         - iwyu_tool -p . -- -Xiwyu --mapping_file=/home/travis/build/bansan85/wiki_le_garrec_fr/cpp/iwyu.imp > iwyu_tool.log; if [ $(cat iwyu_tool.log |grep -e "should add these lines" -e "should remove these lines" | wc -l) -ne "0" ]; then cat iwyu_tool.log; false; fi
         - cd ..
 
-        - git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git
-        - mkdir -p wiki_le_garrec_fr_travis/cpp/linker/weak wiki_le_garrec_fr_travis/cpp/preprocessor wiki_le_garrec_fr_travis/cpp/attribute
-        
-        - nm --demangle buildcppgcc/linker/weak/CMakeFiles/linkerweak.dir/ClasseA.cpp.o > wiki_le_garrec_fr_travis/cpp/linker/weak/ClasseA.cpp.txt
-        - nm --demangle buildcppgcc/linker/weak/CMakeFiles/linkerweak.dir/ClasseB.cpp.o > wiki_le_garrec_fr_travis/cpp/linker/weak/ClasseB.cpp.txt
-        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure1_internal.dir/pure1.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure1.cpp.asm
-        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure2_internal.dir/pure2.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure2.cpp.asm
-        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure3_internal.dir/pure3.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure3.cpp.asm
-        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure4_internal.dir/pure4.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure4.cpp.asm
-        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure5_internal.dir/pure5.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure5.cpp.asm
-        - objdump -drC --no-show-raw-insn -M intel --dwarf-start=0 buildcppgcc/attribute/CMakeFiles/pure6_internal.dir/pure6.cpp.o > wiki_le_garrec_fr_travis/cpp/attribute/pure6.cpp.asm
-        - nm --demangle buildcppgcc/attribute/CMakeFiles/weak1.dir/weak1.cpp.o |grep "variable" > wiki_le_garrec_fr_travis/cpp/attribute/weak1.cpp.nm
-        - buildcppgcc/attribute/weak1 > wiki_le_garrec_fr_travis/cpp/attribute/weak1.out
+        - cd buildcppgcc
         - cd wiki_le_garrec_fr_travis
         - git config --global user.name "Travis"
         - git config --global user.email "travis-ci@le-garrec.fr"
-        - git add cpp/linker/weak/ClasseA.cpp.txt cpp/linker/weak/ClasseB.cpp.txt cpp/attribute/pure{1,2,3,4,5,6}.cpp.asm cpp/attribute/weak1.cpp.nm cpp/attribute/weak1.out
-        - cd ..
-
-        - cp buildcppgcc/preprocessor/CMakeFiles/str_helper.dir/str_helper.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/
-        - cp buildcppgcc/preprocessor/CMakeFiles/macro_and_spaces_internal.dir/macro_and_spaces.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/
-        - cp buildcppgcc/preprocessor/CMakeFiles/bracket_internal.dir/bracket.cpp.i wiki_le_garrec_fr_travis/cpp/preprocessor/
-        - cd wiki_le_garrec_fr_travis
-        - git add cpp/preprocessor/str_helper.cpp.i
-        - git add cpp/preprocessor/macro_and_spaces.cpp.i
-        - git add cpp/preprocessor/bracket.cpp.i
+        - git add .
         - if [ ! -z "$(git diff-index --name-only HEAD --)" ]; then git commit -m "$TRAVIS_COMMIT_MESSAGE" -m "Update from $TRAVIS_COMMIT"; git push; fi
-        - cd ..
+        - cd ../..
 
     - language: python
       python: 3.8

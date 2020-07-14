@@ -1,26 +1,89 @@
+add_custom_target(data_for_travis_cpp_attribute_folder)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute_folder
+  COMMAND mkdir -p "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute")
+
+add_custom_target(data_for_travis_cpp_attribute)
+add_dependencies(data_for_travis_cpp_attribute
+                 data_for_travis_cpp_attribute_folder)
+
 project(pure1_internal)
-add_executable(pure1_internal EXCLUDE_FROM_ALL pure1.cpp)
-add_custom_target(pure1 ALL COMMAND make pure1.cpp.o)
+add_library(pure1_internal OBJECT EXCLUDE_FROM_ALL pure1.cpp)
+add_custom_target(pure1 ALL COMMAND make pure1.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:pure1_internal>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure1.cpp.asm")
+add_dependencies(data_for_travis_cpp_attribute pure1)
 
 project(pure2_internal)
-add_executable(pure2_internal EXCLUDE_FROM_ALL pure2.cpp)
-add_custom_target(pure2 ALL COMMAND make pure2.cpp.o)
+add_library(pure2_internal OBJECT EXCLUDE_FROM_ALL pure2.cpp)
+add_custom_target(pure2 ALL COMMAND make pure2.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:pure2_internal>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure2.cpp.asm")
+add_dependencies(data_for_travis_cpp_attribute pure2)
 
 project(pure3_internal)
-add_executable(pure3_internal EXCLUDE_FROM_ALL pure3.cpp)
-add_custom_target(pure3 ALL COMMAND make pure3.cpp.o)
+add_library(pure3_internal OBJECT EXCLUDE_FROM_ALL pure3.cpp)
+add_custom_target(pure3 ALL COMMAND make pure3.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:pure3_internal>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure3.cpp.asm")
+add_dependencies(data_for_travis_cpp_attribute pure3)
 
 project(pure4_internal)
-add_executable(pure4_internal EXCLUDE_FROM_ALL pure4.cpp)
-add_custom_target(pure4 ALL COMMAND make pure4.cpp.o)
+add_library(pure4_internal OBJECT EXCLUDE_FROM_ALL pure4.cpp)
+add_custom_target(pure4 ALL COMMAND make pure4.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:pure4_internal>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure4.cpp.asm")
+add_dependencies(data_for_travis_cpp_attribute pure4)
 
 project(pure5_internal)
-add_executable(pure5_internal EXCLUDE_FROM_ALL pure5.cpp)
-add_custom_target(pure5 ALL COMMAND make pure5.cpp.o)
+add_library(pure5_internal OBJECT EXCLUDE_FROM_ALL pure5.cpp)
+add_custom_target(pure5 ALL COMMAND make pure5.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:pure5_internal>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure5.cpp.asm")
+add_dependencies(data_for_travis_cpp_attribute pure5)
 
 project(pure6_internal)
-add_executable(pure6_internal EXCLUDE_FROM_ALL pure6.cpp)
-add_custom_target(pure6 ALL COMMAND make pure6.cpp.o)
+add_library(pure6_internal OBJECT EXCLUDE_FROM_ALL pure6.cpp)
+add_custom_target(pure6 ALL COMMAND make pure6.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:pure6_internal>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure6.cpp.asm")
+add_dependencies(data_for_travis_cpp_attribute pure6)
 
 project(weak1)
-add_executable(weak1 weak1.cpp)
+add_library(weak1_obj OBJECT weak1.cpp)
+add_executable(weak1 $<TARGET_OBJECTS:weak1_obj>)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    nm --demangle "$<TARGET_OBJECTS:weak1_obj>" |grep "variable" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/weak1.cpp.nm")
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/weak1" >
+          "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/weak1.out"
+)
+add_dependencies(data_for_travis_cpp_attribute weak1)
