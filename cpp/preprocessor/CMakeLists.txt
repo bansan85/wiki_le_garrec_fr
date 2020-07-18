@@ -6,7 +6,7 @@ add_custom_command(
 
 add_custom_target(data_for_travis_cpp_preprocessor)
 add_dependencies(data_for_travis_cpp_preprocessor
-                 data_for_travis_cpp_linker_weak_folder)
+                 data_for_travis_cpp_preprocessor_folder)
 
 project(str_helper_internal)
 add_library(str_helper_internal OBJECT EXCLUDE_FROM_ALL str_helper.cpp)
