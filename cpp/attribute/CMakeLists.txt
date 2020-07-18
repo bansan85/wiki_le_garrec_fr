@@ -73,6 +73,34 @@ add_custom_command(
     "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure6.cpp.asm")
 add_dependencies(data_for_travis_cpp_attribute pure6)
 
+project(unlikely1_obj)
+add_library(unlikely1_obj OBJECT EXCLUDE_FROM_ALL un-likely1.cpp)
+add_custom_target(unlikely1 ALL COMMAND make un-likely1.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:unlikely1_obj>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/unlikely1.cpp.asm"
+)
+# TODO: to remove when clang will support it.
+target_compile_options(unlikely1_obj PRIVATE -Wno-unknown-attributes)
+add_dependencies(data_for_travis_cpp_attribute unlikely1)
+
+project(unlikely2_obj)
+add_library(unlikely2_obj OBJECT EXCLUDE_FROM_ALL un-likely2.cpp)
+add_custom_target(unlikely2 ALL COMMAND make un-likely2.o)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:unlikely2_obj>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/unlikely2.cpp.asm"
+)
+# TODO: to remove when clang will support it.
+target_compile_options(unlikely2_obj PRIVATE -Wno-unknown-attributes)
+add_dependencies(data_for_travis_cpp_attribute unlikely2)
+
 project(weak1)
 add_library(weak1_obj OBJECT weak1.cpp)
 add_executable(weak1 $<TARGET_OBJECTS:weak1_obj>)
