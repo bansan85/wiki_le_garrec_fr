@@ -6,7 +6,12 @@ mkdir buildcppgcc
 cd buildcppgcc || exit 1
 CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2 -P" cmake ../cpp || { retval=1 && echo "Failure retval"; }
 make || { retval=1 && echo "Failure retval"; }
-git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git || { retval=1 && echo "Failure retval"; }
+if [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ]
+then
+  git clone ssh://git@github.com/bansan85/wiki_le_garrec_fr_travis.git || { retval=1 && echo "Failure retval"; }
+else
+  mkdir -p wiki_le_garrec_fr_travis
+fi
 make data_for_travis || { retval=1 && echo "Failure retval"; }
 cppcheck --inconclusive --enable=all --project=compile_commands.json --error-exitcode=1 --inline-suppr --suppressions-list=../cpp/cppcheck-suppressions.txt || { retval=1 && echo "Failure retval"; }
 iwyu_tool -p . -- -Xiwyu --mapping_file=/home/travis/build/bansan85/wiki_le_garrec_fr/cpp/iwyu.imp > iwyu_tool.log
@@ -34,7 +39,7 @@ then
 fi
 cd .. || exit 1
 
-if [ $retval -eq 0 ]
+if [ $retval -eq 0 ] && [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ]
 then
   cd buildcppgcc || exit 1
   cd wiki_le_garrec_fr_travis || exit 1

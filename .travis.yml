@@ -38,16 +38,9 @@ jobs:
         # - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
         - cppcheck --version
         - clang-format --version
-        # You must add options either openssl will says :
-        # *** WARNING : deprecated key derivation used.
-        - openssl aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -k "$PASSWORD_OPENSSL" -out travis/ci/github_wiki_le_garrec_fr.key -in travis/ci/github_wiki_le_garrec_fr.key.enc -d
         # Open a connection to the authentication agent so ssh-add work.
-        - eval $(ssh-agent -s)
-        # ssh-add says:
-        # Permissions 0664 for 'travis/ci/github_wiki_le_garrec_fr.key' are too open.
-        # It is required that your private key files are NOT accessible by others.
-        - chmod 600 travis/ci/github_wiki_le_garrec_fr.key
-        - ssh-add travis/ci/github_wiki_le_garrec_fr.key
+        - eval "$(ssh-agent -s)"
+        - sh travis/register_ssh_key.sh
 
       script:
         # - docker run --rm -v "$PWD":/usr/src/templateweak -w /usr/src/templateweak gcc:latest g++ cpp/template/weak/ClasseA.cpp cpp/template/weak/ClasseB.cpp cpp/template/weak/main.cpp -Wall -Werror -Wextra -Wpedantic -fanalyzer -O2
