@@ -28,7 +28,7 @@ CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10
 make || { retval=1 && echo "Failure retval"; }
 python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py || { retval=1 && echo "Failure retval"; }
 make clean; scan-build -v -v -v -o . make || { retval=1 && echo "Failure retval"; }
-cppcheck --inconclusive --enable=all --project=compile_commands.json --error-exitcode=1 --inline-suppr --template="{file},{line},{severity},{id},{message}" --suppressions-list=../cpp/cppcheck-suppressions.txt || { retval=1 && echo "Failure retval"; }
+cppcheck --enable=all --project=compile_commands.json --error-exitcode=1 --inline-suppr --template="{file},{line},{severity},{id},{message}" --suppressions-list=../cpp/cppcheck-suppressions.txt || { retval=1 && echo "Failure retval"; }
 iwyu_tool -p . -- -Xiwyu --mapping_file=/home/travis/build/bansan85/wiki_le_garrec_fr/cpp/iwyu.imp > iwyu_tool.log
 if [ "$(grep -c -e "should add these lines" -e "should remove these lines" < iwyu_tool.log)" -ne "0" ]
 then

@@ -10,6 +10,7 @@ add_subdirectory(attribute)
 add_subdirectory(boost)
 add_subdirectory(linker)
 add_subdirectory(preprocessor)
+add_subdirectory(variable)
 
 add_dependencies(data_for_travis data_for_travis_cpp_attribute)
 add_dependencies(data_for_travis data_for_travis_cpp_linker)
