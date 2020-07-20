@@ -8,7 +8,6 @@ add_custom_target(data_for_travis_cpp_preprocessor)
 add_dependencies(data_for_travis_cpp_preprocessor
                  data_for_travis_cpp_preprocessor_folder)
 
-project(str_helper_internal)
 add_library(str_helper_internal OBJECT EXCLUDE_FROM_ALL str_helper.cpp)
 add_custom_target(str_helper ALL COMMAND make str_helper.cpp.i)
 add_custom_command(
@@ -19,7 +18,6 @@ add_custom_command(
 )
 add_dependencies(data_for_travis_cpp_preprocessor str_helper)
 
-project(macro_and_spaces_internal)
 add_library(macro_and_spaces_internal OBJECT EXCLUDE_FROM_ALL
                                              macro_and_spaces.cpp)
 target_compile_options(macro_and_spaces_internal PRIVATE -Wno-unused-value
@@ -34,7 +32,6 @@ add_custom_command(
 )
 add_dependencies(data_for_travis_cpp_preprocessor macro_and_spaces)
 
-project(bracket_internal)
 add_library(bracket_internal OBJECT EXCLUDE_FROM_ALL bracket.cpp)
 target_compile_options(bracket_internal
                        PRIVATE -Wno-gnu-zero-variadic-macro-arguments)

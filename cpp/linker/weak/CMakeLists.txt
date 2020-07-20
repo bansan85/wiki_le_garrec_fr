@@ -8,7 +8,6 @@ add_custom_target(data_for_travis_cpp_linker_weak)
 add_dependencies(data_for_travis_cpp_linker_weak
                  data_for_travis_cpp_linker_weak_folder)
 
-project(linkerweak_obj)
 add_library(linkerweak_obj OBJECT)
 target_compile_options(linkerweak_obj PRIVATE -O0)
 set(linkerweak_sources

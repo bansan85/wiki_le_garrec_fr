@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.11.0)
-project(cppallprojects)
+project(wiki_le_garrec_fr)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # To better read travis log.
 set(CMAKE_VERBOSE_MAKEFILE ON)
