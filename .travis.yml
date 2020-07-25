@@ -37,7 +37,6 @@ jobs:
         # - docker run --rm gcc:latest g++ --version
         # - docker run --rm clangbuiltlinux/ubuntu:latest clang++-11 --version
         - cppcheck --version
-        - clang-format --version
         # Open a connection to the authentication agent so ssh-add work.
         - eval "$(ssh-agent -s)"
         - sh travis/register_ssh_key.sh

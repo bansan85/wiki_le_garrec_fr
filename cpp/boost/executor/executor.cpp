@@ -161,8 +161,8 @@ PriorityScheduler::ExecutorType::~ExecutorType() = default;
 PriorityScheduler::ExecutorType::ExecutorType(ExecutorType&& other) noexcept =
     default;
 
-const PriorityScheduler& PriorityScheduler::ExecutorType::context() const
-    noexcept
+const PriorityScheduler& PriorityScheduler::ExecutorType::context()
+    const noexcept
 {
   return impl_->context();
 }

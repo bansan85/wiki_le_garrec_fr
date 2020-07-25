@@ -16,18 +16,20 @@ add_dependencies(data_for_travis data_for_travis_cpp_attribute)
 add_dependencies(data_for_travis data_for_travis_cpp_linker)
 add_dependencies(data_for_travis data_for_travis_cpp_preprocessor)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  add_custom_target(clang_fmt ALL)
-
-  file(GLOB_RECURSE allfilescpp "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
-       "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-       "${CMAKE_CURRENT_SOURCE_DIR}/*hpp")
-  foreach(filei ${allfilescpp})
+add_custom_target(clang_fmt)
+file(GLOB_RECURSE allfilescpp "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+     "${CMAKE_CURRENT_SOURCE_DIR}/*hpp")
+foreach(filei ${allfilescpp})
+  if(DEFINED ENV{TRAVIS} AND DEFINED ENV{CI})
     add_custom_command(
-      TARGET clang_fmt
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/clang-format-check.sh ${filei})
-  endforeach()
-endif()
+      TARGET clang_fmt COMMAND bash -c \"! clang-format-10 -style=file ${filei}
+                               -output-replacements-xml |grep -q offset\")
+  else()
+    add_custom_command(TARGET clang_fmt COMMAND clang-format -style=file -i
+                                                ${filei})
+  endif()
+endforeach()
 
 if(DEFINED ENV{TRAVIS} AND DEFINED ENV{CI})
   set(CMAKE_FORMAT_ARGS "--check")

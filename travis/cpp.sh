@@ -25,6 +25,7 @@ cd .. || exit 1
 mkdir buildcppclang;
 cd buildcppclang || exit 1
 CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2 -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic" cmake ../cpp || { retval=1 && echo "Failure retval"; }
+make clang_fmt || { retval=1 && echo "Failure retval"; }
 make || { retval=1 && echo "Failure retval"; }
 python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py || { retval=1 && echo "Failure retval"; }
 make clean; scan-build -v -v -v -o . make || { retval=1 && echo "Failure retval"; }
