@@ -82,3 +82,8 @@ jobs:
       script:
         - cd css
         - npx stylelint **/*.css
+
+    - language: java
+      jdk: openjdk11
+      script:
+        - cd css
