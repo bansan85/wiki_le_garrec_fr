@@ -16,7 +16,6 @@ int s(int i)
 
 int iff(int i)
 {
-  // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
   int retval;
   if (i == 1)
   {

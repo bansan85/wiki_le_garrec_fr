@@ -1,5 +1,5 @@
 ---
-Checks:          '*,-llvm-header-guard,-modernize-use-trailing-return-type,-fuchsia-overloaded-operator,-clang-diagnostic-unknown-attributes'
+Checks:          '*,-llvm-header-guard,-modernize-use-trailing-return-type,-fuchsia-overloaded-operator,-clang-diagnostic-unknown-attributes,-cppcoreguidelines-init-variables'
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 AnalyzeTemporaryDtors: false
