@@ -27,17 +27,12 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
       TARGET clang_fmt
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/clang-format-check.sh ${filei})
   endforeach()
-
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(ALL_CMAKELISTS_STAMP "")
-
-  file(GLOB_RECURSE allfilescmake "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
-  foreach(filei ${allfilescmake})
-    add_custom_command(
-      OUTPUT ${filei}.stamp
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/cmake-format-check.sh ${filei})
-    list(APPEND ALL_CMAKELISTS_STAMP ${filei}.stamp)
-  endforeach()
-
-  add_custom_target(cmake_fmt DEPENDS ${ALL_CMAKELISTS_STAMP})
 endif()
+
+add_custom_target(cmake_fmt)
+file(GLOB_RECURSE allfilescmake "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
+foreach(filei ${allfilescmake})
+  add_custom_command(
+    TARGET cmake_fmt
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/cmake-format-check.sh ${filei})
+endforeach()
