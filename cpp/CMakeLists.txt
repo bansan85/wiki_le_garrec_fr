@@ -29,10 +29,15 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   endforeach()
 endif()
 
+if(DEFINED ENV{TRAVIS} AND DEFINED ENV{CI})
+  set(CMAKE_FORMAT_ARGS "--check")
+else()
+  set(CMAKE_FORMAT_ARGS "-i")
+endif()
+
 add_custom_target(cmake_fmt)
 file(GLOB_RECURSE allfilescmake "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 foreach(filei ${allfilescmake})
-  add_custom_command(
-    TARGET cmake_fmt
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/cmake-format-check.sh ${filei})
+  add_custom_command(TARGET cmake_fmt COMMAND cmake-format ${filei}
+                                              ${CMAKE_FORMAT_ARGS})
 endforeach()
