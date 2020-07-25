@@ -11,7 +11,7 @@ add_dependencies(data_for_travis_cpp_preprocessor
 add_library(str_helper_obj OBJECT str_helper.cpp)
 add_custom_target(
   str_helper_i
-  COMMAND make str_helper.cpp.i
+  COMMAND ${CMAKE_MAKE_PROGRAM} str_helper.cpp.i
   DEPENDS str_helper_obj)
 add_custom_command(
   TARGET data_for_travis_cpp_preprocessor
@@ -26,7 +26,7 @@ target_compile_options(macro_and_spaces_obj PRIVATE -Wno-unused-value
                                                     -Wno-unreachable-code)
 add_custom_target(
   macro_and_spaces_i
-  COMMAND make macro_and_spaces.cpp.i
+  COMMAND ${CMAKE_MAKE_PROGRAM} macro_and_spaces.cpp.i
   DEPENDS macro_and_spaces_obj)
 add_custom_command(
   TARGET data_for_travis_cpp_preprocessor
@@ -41,7 +41,7 @@ target_compile_options(
   bracket_obj PRIVATE -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-value)
 add_custom_target(
   bracket_i
-  COMMAND make bracket.cpp.i
+  COMMAND ${CMAKE_MAKE_PROGRAM} bracket.cpp.i
   DEPENDS bracket_obj)
 add_custom_command(
   TARGET data_for_travis_cpp_preprocessor
