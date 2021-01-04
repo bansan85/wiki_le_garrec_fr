@@ -4,7 +4,7 @@ retval=0
 
 mkdir buildcppgcc
 cd buildcppgcc || exit 1
-CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2 -P" cmake ../cpp || { retval=1 && echo "Failure retval"; }
+CC=/usr/bin/gcc-10 CXX=/usr/bin/g++-10 CXXFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2 -P" CFLAGS="-Wall -Werror -Wextra -Wpedantic -fanalyzer -O2 -P" cmake ../cpp || { retval=1 && echo "Failure retval"; }
 make || { retval=1 && echo "Failure retval"; }
 if [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ]
 then
@@ -24,7 +24,7 @@ cd .. || exit 1
 
 mkdir buildcppclang;
 cd buildcppclang || exit 1
-CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2 -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic" cmake ../cpp || { retval=1 && echo "Failure retval"; }
+CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 CXXFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2 -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic" CFLAGS="-isystem /usr/lib/llvm-10/lib/clang/10.0.0/include -Weverything -Werror -O2 -Wno-padded" cmake ../cpp || { retval=1 && echo "Failure retval"; }
 make clang_fmt || { retval=1 && echo "Failure retval"; }
 make || { retval=1 && echo "Failure retval"; }
 python3 /usr/lib/llvm-*/share/clang/run-clang-tidy.py || { retval=1 && echo "Failure retval"; }

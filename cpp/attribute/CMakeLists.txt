@@ -61,6 +61,28 @@ add_custom_command(
     "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/pure6.cpp.asm")
 add_dependencies(data_for_travis_cpp_attribute pure6_obj)
 
+add_library(restrict1_obj OBJECT restrict1.c)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:restrict1_obj>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/restrict1.c.asm"
+)
+target_compile_options(restrict1_obj PRIVATE "-Wno-unused-function")
+add_dependencies(data_for_travis_cpp_attribute restrict1_obj)
+
+add_library(restrict2_obj OBJECT restrict2.c)
+add_custom_command(
+  TARGET data_for_travis_cpp_attribute
+  COMMAND
+    objdump -drC --no-show-raw-insn -M intel --dwarf-start=0
+    "$<TARGET_OBJECTS:restrict2_obj>" >
+    "${CMAKE_BINARY_DIR}/wiki_le_garrec_fr_travis/cpp/attribute/restrict2.c.asm"
+)
+target_compile_options(restrict2_obj PRIVATE "-Wno-unused-function")
+add_dependencies(data_for_travis_cpp_attribute restrict2_obj)
+
 add_library(unlikely1_obj OBJECT un-likely1.cpp)
 add_custom_command(
   TARGET data_for_travis_cpp_attribute

@@ -1,1 +1,2 @@
 unusedFunction:*/cpp/boost/executor/executor.cpp
+unusedFunction:*/cpp/attribute/restrict1.c
