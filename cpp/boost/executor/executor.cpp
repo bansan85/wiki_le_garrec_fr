@@ -82,13 +82,10 @@ struct PriorityScheduler::PrioritySchedulerImpl final
     }
   };
 
-  // NOLINTNEXTLINE
   std::mutex mutex_;
-  // NOLINTNEXTLINE
   std::condition_variable condition_;
   std::priority_queue<std::shared_ptr<item_base>,
                       std::vector<std::shared_ptr<item_base>>, item_comp>
-      // NOLINTNEXTLINE
       queue_;
 
  private:

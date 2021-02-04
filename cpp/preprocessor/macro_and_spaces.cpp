@@ -1,4 +1,4 @@
-#define RET_NEG (ARG1) - ARG1;  // NOLINT
+#define RET_NEG (ARG1) - ARG1;
 
 int main()
 {
@@ -6,5 +6,5 @@ int main()
   // Interprétation erronée à cause de l'espace après ADD lors de la définition de la macro.
   // cppcheck-suppress unreachableCode
   // cppcheck-suppress constStatement
-  return RET_NEG(ARG1);  // NOLINT
+  return RET_NEG(ARG1);
 }

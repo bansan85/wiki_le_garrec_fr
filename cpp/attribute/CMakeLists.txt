@@ -44,6 +44,8 @@ add_custom_command(
 add_dependencies(data_for_travis_cpp_attribute pure4_obj)
 
 add_library(pure5_obj OBJECT pure5.cpp)
+target_compile_options(
+  pure5_obj PRIVATE -Wno-missing-prototypes)
 add_custom_command(
   TARGET data_for_travis_cpp_attribute
   COMMAND
@@ -53,6 +55,8 @@ add_custom_command(
 add_dependencies(data_for_travis_cpp_attribute pure5_obj)
 
 add_library(pure6_obj OBJECT pure6.cpp)
+target_compile_options(
+  pure6_obj PRIVATE -Wno-missing-prototypes)
 add_custom_command(
   TARGET data_for_travis_cpp_attribute
   COMMAND

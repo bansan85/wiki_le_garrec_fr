@@ -1,7 +1,6 @@
 class Classe
 {
  public:
-  // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
   int function(int i) const { return i; }
 };
 
